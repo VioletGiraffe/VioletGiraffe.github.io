@@ -18,7 +18,7 @@ description: "Some short description of your blog can go here." # This will show
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
-remote_theme: nielsenramon/chalk
+remote_theme: pages-themes/tactile@v0.2.0
 
 rss: rss
     
