@@ -18,7 +18,7 @@ description: "Some short description of your blog can go here." # This will show
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
-remote_theme: pages-themes/tactile@v0.2.0
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 
 rss: rss
     
@@ -26,6 +26,7 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-remote-theme
+  - jekyll-include-cache
   - jekyll-titles-from-headings
 
 titles_from_headings:
