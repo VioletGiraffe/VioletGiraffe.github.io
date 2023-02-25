@@ -26,6 +26,7 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-remote-theme
+  - jekyll-titles-from-headings
 
 titles_from_headings:
   strip_title: true
