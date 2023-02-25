@@ -23,7 +23,10 @@ remote_theme: aterenin/minima-reboot
 rss: rss
     
 plugins:
+  - jekyll-seo-tag
+  - jekyll-paginate
   - jekyll-feed
+  - jekyll-redirect-from
   - jekyll-sitemap
 
 titles_from_headings:
