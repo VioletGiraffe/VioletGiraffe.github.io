@@ -18,15 +18,12 @@ description: "Some short description of your blog can go here." # This will show
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
-remote_theme: aterenin/minima-reboot
+remote_theme: yous/whiteglass
 
 rss: rss
     
 plugins:
-  - jekyll-seo-tag
-  - jekyll-paginate
   - jekyll-feed
-  - jekyll-redirect-from
   - jekyll-sitemap
 
 titles_from_headings:
