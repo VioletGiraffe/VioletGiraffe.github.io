@@ -349,7 +349,7 @@ filegroup(
 
 #### Jam
 
-```make
+```
 # Set the project name and version
 project my_project : version 1.0 ;
 
