@@ -345,6 +345,118 @@ filegroup(
 )
 ```
 
+#### Buck (Facebook)
+
+```python
+cxx_library(
+    name = 'my_library',
+    srcs = [        'src/file1.cpp',        'src/file2.cpp',    ],
+    deps = [        ':my_dependency',    ],
+    includes = [        'include',    ],
+    copts = select({
+        'windows': [
+            '/EHsc',
+            '/std:c++latest',
+        ],
+        '//conditions:default': [],
+    }),
+    linkerflags = [        '-Wl,-rpath,$ORIGIN',    ],
+    visibility = [        'PUBLIC',    ],
+    link_style = 'static',
+    link_whole = True,
+)
+
+cxx_library(
+    name = 'my_dependency',
+    linkstyle = 'static',
+    link_whole = True,
+    link_libs = [        'path/to/my/lib',    ],
+    visibility = [        'PUBLIC',    ],
+)
+
+cxx_binary(
+    name = 'my_executable',
+    srcs = [        'src/main.cpp',    ],
+    deps = [        ':my_library',    ],
+    visibility = [        'PUBLIC',    ],
+)
+
+# Set a custom output path
+genrule(
+    name = 'copy_library',
+    srcs = [        ':my_library',    ],
+    outs = [        'build/lib/libmy_library.a',    ],
+    cmd = 'mkdir -p $$(dirname $OUT) && cp $< $OUT',
+)
+```
+
+#### Fastbuild
+
+```python
+Settings(
+    CompilerPath = 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx86/x86',
+    LinkerPath = 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx86/x86',
+    LibraryPaths = [ 'path/to/my' ],
+    IncludePaths = [ 'include' ]
+)
+
+Library('my_dependency',
+    Sources = [],
+    Libs = [ 'llib' ],
+    Type = 'Static'
+)
+
+Library('my_library',
+    Sources = [ 'src/file1.cpp', 'src/file2.cpp' ],
+    Libs = [ ':my_dependency' ],
+    Type = 'Static'
+)
+
+if (TargetEnvironment == 'windows')
+{
+    SetTargetProperties(
+        'my_library',
+        OutputDirectory = 'build',
+        OutputFilename = 'libmy_library.lib',
+        CompilerOptions = '/EHsc /std:c++latest',
+        LinkerOptions = '-Wl,-rpath,$ORIGIN'
+    )
+}
+else
+{
+    SetTargetProperties(
+        'my_library',
+        OutputDirectory = 'build',
+        OutputFilename = 'libmy_library.a'
+    )
+}
+
+Executable('my_executable',
+    Sources = [ 'src/main.cpp' ],
+    Libs = [ ':my_library' ]
+)
+
+if (TargetEnvironment == 'windows')
+{
+    SetTargetProperties(
+        'my_executable',
+        OutputDirectory = 'build',
+        OutputFilename = 'my_executable.exe',
+        CompilerOptions = '/EHsc /std:c++latest',
+        LinkerOptions = '-Wl,-rpath,$ORIGIN'
+    )
+}
+else
+{
+    SetTargetProperties(
+        'my_executable',
+        OutputDirectory = 'build',
+        OutputFilename = 'my_executable'
+    )
+)
+
+```
+
 ### Build executors
 
 #### Jam
