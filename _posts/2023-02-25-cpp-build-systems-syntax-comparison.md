@@ -457,6 +457,44 @@ else
 
 ```
 
+#### xmake
+
+```lua
+-- Define the project and its language
+add_rules('mode.debug', 'mode.release')
+target('my_project')
+    set_languages('cxx17')
+
+-- Set the source files for the library
+add_files('src/file1.cpp', 'src/file2.cpp')
+
+-- Add a dependency on another static library
+add_deps('my_dependency')
+add_linkdirs('path/to/my')
+add_links('lib')
+
+-- Set compiler flags for MSVC on Windows
+if is_plat('windows') then
+    add_cxxflags('/EHsc', '/std:c++latest')
+end
+
+-- Set a custom include path
+add_includedirs('include')
+
+-- Set a custom output path
+set_targetdir('build')
+set_objectdir('build/obj')
+set_targetname('my_library')
+set_targetprefix('lib')
+add_ldflags('-Wl,-rpath,$ORIGIN')
+
+-- Define an executable target and link against the library
+target('my_executable')
+    set_kind('binary')
+    add_files('src/main.cpp')
+    add_deps('my_library')
+```
+
 ### Build executors
 
 These build systems actually build your projects, but they cannot generate a project for your IDE or for another build system.
