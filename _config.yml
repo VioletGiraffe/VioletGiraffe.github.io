@@ -18,7 +18,7 @@ github_username: "VioletGiraffe"
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
-remote_theme: pages-themes/slate@v0.2.0
+theme: minima
 show_excerpts: true
 
 rss: rss
