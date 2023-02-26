@@ -19,7 +19,7 @@ github_username: "VioletGiraffe"
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
 theme: minima
-excerpt_separator: /(?<=\b\w{30})\b/
+show_excerpts: true
 
 rss: rss
     
