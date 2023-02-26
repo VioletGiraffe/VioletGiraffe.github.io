@@ -466,3 +466,98 @@ build my_executable: cxx_link | src/main.cpp my_library.a
   soname = 
   sources = src/main.cpp
 ```
+
+#### Gradle
+
+```js
+plugins {
+    id 'cpp'
+}
+
+model {
+    components {
+        my_library(NativeLibrarySpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs "src"
+                        include "**/*.cpp"
+                    }
+                }
+            }
+
+            binaries {
+                if (toolChain in VisualCpp) {
+                    staticLibrary {
+                        libFile = "my_library.lib"
+                        cppCompiler.args "/EHsc", "/std:c++latest"
+                    }
+                } else {
+                    staticLibrary {
+                        libFile = "libmy_library.a"
+                        cppCompiler.args "-std=c++17"
+                    }
+                }
+            }
+
+            buildTypes {
+                release {
+                    cppCompiler.args "-O2"
+                }
+            }
+
+            targetPlatform "x86_64"
+            targetPlatformVersion "10.0"
+            targetMachines "machine1"
+            targetDirectory "build"
+        }
+
+        my_executable(NativeExecutableSpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs "src"
+                        include "**/*.cpp"
+                    }
+                }
+            }
+
+            binaries.all {
+                if (toolChain in VisualCpp) {
+                    linker.args "/SUBSYSTEM:CONSOLE", "/ENTRY:mainCRTStartup"
+                }
+            }
+
+            linkLibraries "my_library"
+        }
+    }
+}
+```
+
+#### Scons 4.2.0
+
+```python
+env = Environment()
+
+# Set the C++ standard to C++17
+env.Append(CXXFLAGS=['-std=c++17'])
+
+# Set the target name and source files for the library
+lib_sources = ['src/file1.cpp', 'src/file2.cpp']
+my_library = env.StaticLibrary('my_library', lib_sources)
+
+# Add a dependency on another static library
+my_dependency = env.StaticLibrary('my_dependency', LIBS=['path/to/my/lib.a'])
+env.Depends(my_library, my_dependency)
+
+# Set compiler flags for MSVC on Windows
+if env['PLATFORM'] == 'win32' and env['CC'] == 'cl':
+    env.Append(CXXFLAGS=['/EHsc', '/std:c++latest'])
+
+# Set a custom include path
+env.Append(CPPPATH=['include'])
+
+# Set a custom output path
+# Set a custom output directory
+VariantDir('build', 'src', duplicate=0)
+```
