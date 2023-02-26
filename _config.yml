@@ -18,11 +18,9 @@ github_username: "VioletGiraffe"
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
-remote_theme: jekyll/minima
-show_excerpts: true
 
-minima:
-  skin: dark
+theme: minima
+show_excerpts: true
 
 rss: rss
     
