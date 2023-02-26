@@ -14,7 +14,7 @@ The list is in no particular order.
 
 ### Build generators
 
-First, we'll look into the build systems that are actually build generators - they create project files or build scripts for various IDEs and build executors. 
+First, we'll look into the build systems that are actually build generators - they create project files or build scripts for various other IDEs and build executors, but can't build (invoke the compiler and linker) themselves.
 
 #### Meson
 
@@ -236,7 +236,7 @@ my_library.output_dir = output_directory
 
 ### Executors / generators
 
-These systems can both generate projects and build their own projects without invoking an additional build system.
+These systems can both generate projects for other build systems / IDEs, and build their own projects without invoking an additional lower-level build system - your choice how to use them.
 
 #### qbs
 
@@ -458,6 +458,8 @@ else
 ```
 
 ### Build executors
+
+These build systems actually build your projects, but they cannot generate a project for your IDE or for another build system.
 
 #### Jam
 
