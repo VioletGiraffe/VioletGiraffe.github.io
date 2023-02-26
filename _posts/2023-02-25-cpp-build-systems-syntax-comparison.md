@@ -539,25 +539,32 @@ model {
 ```python
 env = Environment()
 
-# Set the C++ standard to C++17
-env.Append(CXXFLAGS=['-std=c++17'])
-
-# Set the target name and source files for the library
-lib_sources = ['src/file1.cpp', 'src/file2.cpp']
-my_library = env.StaticLibrary('my_library', lib_sources)
-
-# Add a dependency on another static library
-my_dependency = env.StaticLibrary('my_dependency', LIBS=['path/to/my/lib.a'])
-env.Depends(my_library, my_dependency)
-
 # Set compiler flags for MSVC on Windows
-if env['PLATFORM'] == 'win32' and env['CC'] == 'cl':
-    env.Append(CXXFLAGS=['/EHsc', '/std:c++latest'])
+if env['PLATFORM'] == 'win32':
+    env.Append(CCFLAGS=['/EHsc', '/std:c++latest'])
 
 # Set a custom include path
 env.Append(CPPPATH=['include'])
 
 # Set a custom output path
-# Set a custom output directory
-VariantDir('build', 'src', duplicate=0)
+env.Append(LIBPATH=['build'])
+env.Append(LINKFLAGS=['-Wl,-rpath,$ORIGIN'])
+env.Append(LIBPREFIX='lib')
+
+# Set the target name and source files for the library
+my_library = env.StaticLibrary(target='my_library', 
+    source=['src/file1.cpp', 'src/file2.cpp'])
+
+# Add a dependency on another static library
+my_dependency = env.StaticLibrary(target='my_dependency', 
+    source=[], 
+    LIBPATH=['path/to/my'], 
+    LIBS=['lib'])
+
+my_library.Depends(my_library, my_dependency)
+
+# Define an executable target and link against the library
+my_executable = env.Program(target='my_executable', 
+    source='src/main.cpp', 
+    LIBS=[my_library])
 ```
