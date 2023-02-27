@@ -91,7 +91,6 @@ target_link_libraries(my_executable PRIVATE my_library)
 ```lua
 workspace "my_project"
    configurations { "Debug", "Release" }
-
    -- Set the target name and source files for the library
    project "my_library"
       kind "StaticLib"
