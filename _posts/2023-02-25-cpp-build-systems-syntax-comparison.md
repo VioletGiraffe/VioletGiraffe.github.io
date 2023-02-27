@@ -234,6 +234,80 @@ if (is_win) {
 my_library.output_dir = output_directory
 ```
 
+#### Sharpmake
+
+```cs
+using System;
+using System.Collections.Generic;
+using Sharpmake;
+
+[module: Sharpmake.Include("CustomOptions.cs")]
+[module: Sharpmake.Include("CustomOutput.cs")]
+
+[Generate]
+class MyProject : CPlusPlusProject
+{
+    public MyProject()
+    {
+        Name = "my_project";
+
+        AddTargets(new Target(
+            Platform.win64,
+            DevEnv.vs2019,
+            Optimization.Debug | Optimization.Release));
+
+        SourceRootPath = @"[project.SharpmakeCsPath]\..\src";
+
+        AddLibrary("my_library", new[] {
+            @"src\file1.cpp",
+            @"src\file2.cpp",
+        });
+
+        AddLinkerOptions("my_library", new[] {
+            "-Wl,-rpath,$ORIGIN",
+        });
+
+        AddIncludeDirs("my_library", new[] {
+            @"include",
+        });
+
+        AddLibrary("my_dependency", new[] {
+            @"path\to\my\lib.lib",
+        });
+
+        AddLinkerOptions("my_dependency", new[] {
+            "-Lpath/to/my",
+        });
+
+        AddDependency("my_library", "my_dependency");
+
+        AddExecutable("my_executable", new[] {
+            @"src\main.cpp",
+        }, "my_library");
+    }
+
+    [Configure()]
+    public void ConfigureAll(Configuration conf, Target target)
+    {
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]\..\include");
+
+        conf.Options.Add(SharpmakeOptions.Vc.Compiler.CppLanguageStandard.CPPLatest);
+
+        if (target.Platform == Platform.win64)
+        {
+            conf.Options.Add(SharpmakeOptions.Vc.Compiler.Exceptions.EnableWithSEH);
+            conf.Options.Add(SharpmakeOptions.Vc.Compiler.RuntimeLibrary.MultiThreadedDebugDLL);
+            conf.Options.Add(SharpmakeOptions.Vc.Compiler.RuntimeLibrary.MultiThreadedDLL);
+            conf.Options.Add(SharpmakeOptions.Vc.Compiler.WarningLevel.Level3);
+
+            conf.Output = "[conf.Name]\\";
+            conf.TargetPath = "[conf.OutputDirectory]\\bin\\[target.Platform]\\[conf.Name]\\";
+            conf.IntermediatePath = "[conf.OutputDirectory]\\obj\\[target.Platform]\\[conf.Name]\\";
+        }
+    }
+}
+```
+
 ### Executors / generators
 
 These systems can both generate projects for other build systems / IDEs, and build their own projects without invoking an additional lower-level build system - your choice how to use them.
