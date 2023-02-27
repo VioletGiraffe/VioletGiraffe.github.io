@@ -306,6 +306,35 @@ class MyProject : CPlusPlusProject
 }
 ```
 
+#### Boost.Build (B2)
+
+```
+project my_project : requirements
+    <link>static
+    <cxxflags>-std=c++latest
+    <cxxflags>/EHsc
+    ;
+
+lib my_library
+    : [ glob tree src/*.cpp ]
+    : <include>include
+    : <variant>release:<name>my_library:<install-type>LIB:<location>lib
+    : <variant>debug:<name>my_library:<install-type>LIB:<location>lib/debug
+    ;
+
+lib my_dependency
+    : path/to/my/lib.a
+    ;
+
+exe my_executable
+    : src/main.cpp
+    : my_library
+    ;
+
+install install : my_library
+    ;
+```
+
 ### Executors / generators
 
 These systems can both generate projects for other build systems / IDEs, and build their own projects without invoking an additional lower-level build system - your choice how to use them.
