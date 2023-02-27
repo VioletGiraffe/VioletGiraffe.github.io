@@ -309,15 +309,15 @@ class MyProject : CPlusPlusProject
 #### Boost.Build (B2)
 
 ```
-project my_project : requirements
+project my_library : requirements
     <link>static
     <cxxflags>-std=c++latest
     <cxxflags>/EHsc
     ;
 
 lib my_library
-    : [ glob tree src/*.cpp ]
-    : <include>include
+    : src/file1.cpp src/file2.cpp
+    : <include>path/to/my/include
     : <variant>release:<name>my_library:<install-type>LIB:<location>lib
     : <variant>debug:<name>my_library:<install-type>LIB:<location>lib/debug
     ;
@@ -329,10 +329,81 @@ lib my_dependency
 exe my_executable
     : src/main.cpp
     : my_library
+    : <include>include
+    : <variant>release:<name>my_executable:<install-type>BIN:<location>bin
+    : <variant>debug:<name>my_executable:<install-type>BIN:<location>bin/debug
     ;
 
-install install : my_library
+install install : my_library my_executable
     ;
+```
+
+#### Tundra
+
+```lua
+Settings {
+    Env = {
+        CXXOPTS = {
+            Release = { "/EHsc", "/std:c++latest" },
+            Debug   = { "/EHsc", "/std:c++latest", "-g" },
+        },
+        VARIANT_DIR = ".build/$(VARIANT)",
+        OUTPUT_DIR  = "$(VARIANT_DIR)/bin",
+        OBJECT_DIR  = "$(VARIANT_DIR)/obj",
+        LIB_DIR     = "$(VARIANT_DIR)/lib",
+    },
+    Platforms = {
+        win64 = {
+            CXX = "cl",
+            CXXOPTS = {
+                Debug   = { "/MDd" },
+                Release = { "/MD" },
+            },
+            LD = "link",
+            LDOPTS = {
+                Debug   = { "/DEBUG" },
+                Release = {},
+            },
+            LIBRARY_PREFIX = "",
+            LIBRARY_SUFFIX = ".lib",
+            EXECUTABLE_SUFFIX = ".exe",
+        },
+    },
+}
+
+Program {
+    Name = "my_executable",
+    Sources = { "src/main.cpp" },
+    Libs = { "my_library" },
+    Includes = { "include" },
+    Frameworks = {},
+    Defs = {},
+    PreBuildCommands = {},
+    PostBuildCommands = {},
+    Variant = "Release",
+    Config = "win64",
+}
+
+Library {
+    Name = "my_library",
+    Sources = { "src/file1.cpp", "src/file2.cpp" },
+    Includes = { "include" },
+    Frameworks = {},
+    Defs = {},
+    Variant = "Release",
+    Config = "win64",
+}
+
+StaticLibrary {
+    Name = "my_dependency",
+    Sources = {},
+    Libs = { "path/to/my/lib.a" },
+    Includes = {},
+    Frameworks = {},
+    Defs = {},
+    Variant = "Release",
+    Config = "win64",
+}
 ```
 
 ### Executors / generators
