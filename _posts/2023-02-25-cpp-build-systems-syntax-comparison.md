@@ -306,40 +306,6 @@ class MyProject : CPlusPlusProject
 }
 ```
 
-#### Boost.Build (B2)
-
-This one is provided by the actual intelligence, not an artificial one - thank you to **grafikrobot** on [Reddit](https://www.reddit.com/r/cpp/comments/11cq7vb/comment/ja6k1sz/?utm_source=share&utm_medium=web2x&context=3)!
-
-```
-project my_project ;
-
-# Add a dependency on another static library
-lib my_dependency : : <file>path/to/my/lib.a ;
-
-# Set the target name..
-lib my_library
-    :   # ..and source files for the library
-        src/file1.cpp src/file2.cpp
-        # Add a dependency on another static library
-        my_dependency
-    :   # Set compiler flags for MSVC on Windows
-        # (for /EHsc option)
-        [ conditional <toolset>msvc : <exception-handling>on
-            <asynch-exceptions>off <extern-c-nothrow>on ]
-        # (for /std:c++latest)
-        <cxxstd>latest
-        # Set a custom output path
-        <location>lib
-    :
-    :
-        # Set a custom include path (as a usage requirement)
-        <include>include
-    ;
-
-# Define an executable target and link against the library
-exe my_executable : src/main.cpp my_library/<link>static ;
-```
-
 #### Tundra
 
 ```lua
@@ -672,6 +638,40 @@ target('my_executable')
 ### Build executors
 
 These build systems actually build your projects, but they cannot generate a project for your IDE or for another build system.
+
+#### Boost.Build (B2)
+
+This one is provided by the actual intelligence, not an artificial one - thank you to **grafikrobot** on [Reddit](https://www.reddit.com/r/cpp/comments/11cq7vb/comment/ja6k1sz/?utm_source=share&utm_medium=web2x&context=3)!
+
+```
+project my_project ;
+
+# Add a dependency on another static library
+lib my_dependency : : <file>path/to/my/lib.a ;
+
+# Set the target name..
+lib my_library
+    :   # ..and source files for the library
+        src/file1.cpp src/file2.cpp
+        # Add a dependency on another static library
+        my_dependency
+    :   # Set compiler flags for MSVC on Windows
+        # (for /EHsc option)
+        [ conditional <toolset>msvc : <exception-handling>on
+            <asynch-exceptions>off <extern-c-nothrow>on ]
+        # (for /std:c++latest)
+        <cxxstd>latest
+        # Set a custom output path
+        <location>lib
+    :
+    :
+        # Set a custom include path (as a usage requirement)
+        <include>include
+    ;
+
+# Define an executable target and link against the library
+exe my_executable : src/main.cpp my_library/<link>static ;
+```
 
 #### Jam
 
