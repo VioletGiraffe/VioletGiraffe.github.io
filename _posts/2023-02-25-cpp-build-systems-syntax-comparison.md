@@ -308,34 +308,36 @@ class MyProject : CPlusPlusProject
 
 #### Boost.Build (B2)
 
+This one is provided by the actual intelligence, not an artificial one - thank you to **grafikrobot** on [Reddit](https://www.reddit.com/r/cpp/comments/11cq7vb/comment/ja6k1sz/?utm_source=share&utm_medium=web2x&context=3)!
+
 ```
-project my_library : requirements
-    <link>static
-    <cxxflags>-std=c++latest
-    <cxxflags>/EHsc
-    ;
+project my_project ;
 
+# Add a dependency on another static library
+lib my_dependency : : <file>path/to/my/lib.a ;
+
+# Set the target name..
 lib my_library
-    : src/file1.cpp src/file2.cpp
-    : <include>path/to/my/include
-    : <variant>release:<name>my_library:<install-type>LIB:<location>lib
-    : <variant>debug:<name>my_library:<install-type>LIB:<location>lib/debug
+    :   # ..and source files for the library
+        src/file1.cpp src/file2.cpp
+        # Add a dependency on another static library
+        my_dependency
+    :   # Set compiler flags for MSVC on Windows
+        # (for /EHsc option)
+        [ conditional <toolset>msvc : <exception-handling>on
+            <asynch-exceptions>off <extern-c-nothrow>on ]
+        # (for /std:c++latest)
+        <cxxstd>latest
+        # Set a custom output path
+        <location>lib
+    :
+    :
+        # Set a custom include path (as a usage requirement)
+        <include>include
     ;
 
-lib my_dependency
-    : path/to/my/lib.a
-    ;
-
-exe my_executable
-    : src/main.cpp
-    : my_library
-    : <include>include
-    : <variant>release:<name>my_executable:<install-type>BIN:<location>bin
-    : <variant>debug:<name>my_executable:<install-type>BIN:<location>bin/debug
-    ;
-
-install install : my_library my_executable
-    ;
+# Define an executable target and link against the library
+exe my_executable : src/main.cpp my_library/<link>static ;
 ```
 
 #### Tundra
