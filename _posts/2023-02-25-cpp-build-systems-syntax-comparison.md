@@ -21,35 +21,34 @@ First, we'll look into the build systems that are actually build generators - th
 ```python
 project('my_project', 'cpp')
 
-# Set the target name and source files for the library
+# Define source files
+src_files = ['src/file1.cpp', 'src/file2.cpp']
+inc_dirs = include_directories('include')
+
+# Define the library target as a static library
 my_library = static_library('my_library', 
-    sources : ['src/file1.cpp', 'src/file2.cpp'])
+    sources: src_files,
+    include_directories: inc_dirs,
+    type: 'static',
+    install: true,
+)
 
-# Add a dependency on another static library
-my_dependency = static_library('my_dependency', 
-    sources : [], 
-    link_args : ['-Lpath/to/my/', '-llib'])
-
-my_library.add_dependency(my_dependency)
+# Add dependency on another static library
+my_dependency = static_library('my_dependency',
+    sources: [],
+    link_with: 'path/to/my/lib.a',
+)
 
 # Set compiler flags for MSVC on Windows
-if meson.is_cross_build() and meson.get_cross_property('system_name').startswith('windows')
-    my_library.add_project_arguments('/EHsc', '/std:c++latest')
-endif
+if (is_windows())
+    add_project_arguments('/EHsc', '/std:c++latest', language: 'cpp', when: 'cpp')
+endif()
 
-# Set a custom include path
-my_library.include_directories('include')
-
-# Set a custom output path
-my_library.set_target_filename('my_library')
-my_library.set_static_linker_args('-Wl,-rpath,$ORIGIN')
-my_library.set_default_build_dir('build')
-my_library.set_static_library_prefix('lib')
-
-# Define an executable target and link against the library
-my_executable = executable('my_executable', 
-    sources : ['src/main.cpp'], 
-    link_with : my_library)
+# Define the executable target and link against the library
+my_executable = executable('my_executable',
+    sources: ['src/main.cpp'],
+    link_with: my_library,
+)
 ```
 
 #### CMake
