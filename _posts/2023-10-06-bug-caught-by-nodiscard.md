@@ -7,12 +7,6 @@ Here's an interesting bug I found in my old code. It's a small typo that complet
 
 ---
 
-I requested that each project contains the following. This covers many real-life uses.
-* A static library dependency.
-* Custom include path.
-* Custom target / output path.
-* Custom compiler flags for Windows.
-
 Here it is:
 
 ```
