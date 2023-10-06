@@ -25,7 +25,7 @@ void bug(const FancyString& log)
 Do you see it?    
 The only reason I noticed is the new major release of the `FancyString` library added [[nodiscard]] where approapriate. That, of course, did finally catch this error, which was lurking in our codebase for many years.
 
-Godbolt: https://godbolt.org/z/zYsb36vf9
+Godbolt: [https://godbolt.org/z/zYsb36vf9](https://godbolt.org/z/zYsb36vf9)
 
 Conclusions:
 * `[[nodiscard]]` is great, don't be lazy and always put it where appropriate.
